@@ -1,53 +1,56 @@
-import * as vscode from 'vscode';
-import { Message } from '../types/chat';
-import { ChatHistoryManager } from '../utils/ChatHistoryManager';
+import * as vscode from "vscode";
+import { Message } from "../types/chat";
+import { ChatHistoryManager } from "../utils/ChatHistoryManager";
 
 export class ChatViewProvider implements vscode.WebviewViewProvider {
-    private _view?: vscode.WebviewView;
-    private chatHistoryManager: ChatHistoryManager;
+  private _view?: vscode.WebviewView;
+  private chatHistoryManager: ChatHistoryManager;
 
-    constructor(
-        private readonly _extensionUri: vscode.Uri,
-        chatHistoryManager: ChatHistoryManager
-    ) {
-        this.chatHistoryManager = chatHistoryManager;
-    }
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    chatHistoryManager: ChatHistoryManager
+  ) {
+    this.chatHistoryManager = chatHistoryManager;
+  }
 
-    public resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        _context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken,
-    ) {
-        this._view = webviewView;
-        webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [this._extensionUri]
-        };
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    _context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this._extensionUri],
+    };
 
-        // Set up message handler
-        webviewView.webview.onDidReceiveMessage(message => {
-            if (message.type === 'userMessage') {
-                this.handleMessage(message.content);
-            }
-        });
+    // Set up message handler
+    webviewView.webview.onDidReceiveMessage((message) => {
+      if (message.type === "userMessage") {
+        this.handleMessage(message.content);
+      }
+    });
 
-        webviewView.webview.html = this._getHtmlForWebview();
-    }
+    webviewView.webview.html = this._getHtmlForWebview();
+  }
 
-    private handleMessage(message: string): void {
-        const userMessage: Message = {
-            role: 'user',
-            content: message,
-            timestamp: Date.now()
-        };
-        
-        const sessionId = 'default'; // You may want to manage sessions differently
-        this.chatHistoryManager.addMessage(sessionId, userMessage);
-        this._view?.webview.postMessage({ type: 'addMessage', message: userMessage });
-    }
+  private handleMessage(message: string): void {
+    const userMessage: Message = {
+      role: "user",
+      content: message,
+      timestamp: Date.now(),
+    };
 
-    private _getHtmlForWebview(): string {
-        return `<!DOCTYPE html>
+    const sessionId = "default"; // You may want to manage sessions differently
+    this.chatHistoryManager.addMessage(sessionId, userMessage);
+    this._view?.webview.postMessage({
+      type: "addMessage",
+      message: userMessage,
+    });
+  }
+
+  private _getHtmlForWebview(): string {
+    return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -133,5 +136,5 @@ export class ChatViewProvider implements vscode.WebviewViewProvider {
                 </script>
             </body>
             </html>`;
-    }
-} 
+  }
+}
