@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src {{cspSource}} 'unsafe-inline'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; img-src {{cspSource}} https:; connect-src http://localhost:11434 http://localhost:1234;">
+    <link href="{{styleUri}}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <button id="chatBtn" class="header-button active">
+                    <span class="codicon codicon-comment-discussion"></span>
+                    Chat
+                </button>
+                <button id="composerBtn" class="header-button">
+                    <span class="codicon codicon-edit"></span>
+                    Composer
+                </button>
+                <button id="settingsBtn" class="header-button">
+                    <span class="codicon codicon-gear"></span>
+                    Settings
+                </button>
+            </div>
+            <div class="header-right">
+                <select id="sessionSelect" class="header-session-select">
+                    <option value="">Geçmiş sohbetler...</option>
+                </select>
+                <button id="newSessionBtn" class="header-button">
+                    +
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="chatView" class="view-panel active">
+                <div id="messageContainer" class="message-container">
+                    <div class="messages-wrapper"></div>
+                </div>
+                <button id="scrollToBottomBtn" class="scroll-to-bottom-btn">
+                    <span>↓</span>
+                </button>
+                <div class="bottom-container">
+                    <div class="input-container">
+                        <textarea id="userInput" placeholder="Mesajınızı yazın... (Enter ile gönder, Ctrl+Enter ile yeniden indexle)"></textarea>
+                        <button id="sendButton">Gönder</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="composerView" class="view-panel">
+                <div class="composer-options">
+                    <label>
+                        <input type="checkbox" id="includeImports" checked>
+                        Import'ları dahil et
+                    </label>
+                    <label>
+                        <input type="checkbox" id="includeTypes" checked>
+                        Tip tanımlarını dahil et
+                    </label>
+                    <label>
+                        <input type="checkbox" id="includeTests" checked>
+                        Test kodunu dahil et
+                    </label>
+                </div>
+                <div id="composerPreview" class="composer-preview">
+                    <div class="messages-wrapper"></div>
+                </div>
+                <button id="scrollToBottomBtnComposer" class="scroll-to-bottom-btn">
+                    <span>↓</span>
+                </button>
+                <div class="bottom-container">
+                    <div class="input-container">
+                        <textarea id="composerInput" placeholder="Kod üretmek için talimatlarınızı yazın... (Enter ile gönder)"></textarea>
+                        <button id="generateButton">Üret</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settingsView" class="view-panel">
+                <div class="settings-container">
+                    <div class="settings-section">
+                        <h3>AI Model Ayarları</h3>
+                        <div class="model-settings">
+                            <div class="model-selector">
+                                <label>AI Provider</label>
+                                <select id="aiProvider">
+                                    <option value="ollama">Ollama</option>
+                                    <option value="lmstudio">LM Studio</option>
+                                </select>
+                            </div>
+                            <div class="model-selector">
+                                <label>Model</label>
+                                <select id="modelName"></select>
+                            </div>
+                            <div class="model-config">
+                                <label>API Endpoint</label>
+                                <input type="text" id="apiEndpoint" placeholder="http://localhost:11434">
+                            </div>
+                            <div class="model-config">
+                                <label>Max Tokens</label>
+                                <input type="number" id="maxTokens" value="2048">
+                            </div>
+                            <div class="model-config">
+                                <label>Temperature</label>
+                                <input type="range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                                <span id="temperatureValue">0.7</span>
+                            </div>
+                            <button id="saveModel" class="primary-button">Kaydet</button>
+                            <button id="testConnection" class="secondary-button">Bağlantıyı Test Et</button>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Görünüm Ayarları</h3>
+                        <div class="appearance-settings">
+                            <div class="setting-item">
+                                <label>Tema</label>
+                                <select id="theme">
+                                    <option value="system">Sistem</option>
+                                    <option value="light">Açık</option>
+                                    <option value="dark">Koyu</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Font Boyutu</label>
+                                <input type="number" id="fontSize" value="14">
+                            </div>
+                            <div class="setting-item">
+                                <label>Font Ailesi</label>
+                                <select id="fontFamily">
+                                    <option value="system-ui">Sistem</option>
+                                    <option value="monospace">Monospace</option>
+                                    <option value="sans-serif">Sans Serif</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3>Davranış Ayarları</h3>
+                        <div class="behavior-settings">
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="autoComplete" checked>
+                                    Otomatik Tamamlama
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="inlineCompletion" checked>
+                                    Satır İçi Tamamlama
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="autoImport" checked>
+                                    Otomatik Import
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="messageTemplate">
+        <div class="message">
+            <div class="avatar">
+                <i class="codicon"></i>
+            </div>
+            <div class="message-content">
+                <div class="markdown-content"></div>
+            </div>
+        </div>
+    </template>
+
+    <template id="fileAttachmentTemplate">
+        <div class="file-attachment">
+            <i class="codicon icon"></i>
+            <span class="filename"></span>
+        </div>
+    </template>
+
+    <script>
+        const vscode = acquireVsCodeApi();
+        const messageContainer = document.getElementById('messageContainer');
+        const composerPreview = document.getElementById('composerPreview');
+        const userInput = document.getElementById('userInput');
+        const composerInput = document.getElementById('composerInput');
+        const sendButton = document.getElementById('sendButton');
+        const generateButton = document.getElementById('generateButton');
+        let currentView = 'chat';
+        let isViewTransitioning = false;
+        let chatMessages = [];
+        let composerMessages = [];
+
+        // Scroll kontrolü için değişkenler
+        let isUserScrolling = false;
+        let shouldAutoScroll = true;
+
+        // Scroll butonları
+        const scrollToBottomBtn = document.getElementById('scrollToBottomBtn');
+        const scrollToBottomBtnComposer = document.getElementById('scrollToBottomBtnComposer');
+
+        // Event Listeners
+        userInput.addEventListener('keydown', handleKeyPress);
+        composerInput.addEventListener('keydown', handleKeyPress);
+        sendButton.addEventListener('click', () => sendMessage(userInput, 'chat'));
+        generateButton.addEventListener('click', () => sendMessage(composerInput, 'composer'));
+        window.addEventListener('message', handleMessage);
+
+        // View switching buttons
+        document.getElementById('chatBtn').addEventListener('click', () => switchView('chat'));
+        document.getElementById('composerBtn').addEventListener('click', () => switchView('composer'));
+        document.getElementById('settingsBtn').addEventListener('click', () => switchView('settings'));
+
+        // Model settings listeners
+        document.getElementById('aiProvider').addEventListener('change', updateModelList);
+        document.getElementById('temperature').addEventListener('input', updateTemperatureValue);
+        document.getElementById('saveModel').addEventListener('click', saveModelSettings);
+        document.getElementById('testConnection').addEventListener('click', testModelConnection);
+
+        // Session management
+        const newSessionBtn = document.getElementById('newSessionBtn');
+        const sessionSelect = document.getElementById('sessionSelect');
+
+        newSessionBtn.addEventListener('click', () => {
+            vscode.postMessage({
+                command: 'createNewSession',
+                view: currentView
+            });
+        });
+
+        sessionSelect.addEventListener('change', (e) => {
+            const sessionId = e.target.value;
+            if (sessionId) {
+                vscode.postMessage({
+                    command: 'switchSession',
+                    sessionId: sessionId
+                });
+            }
+        });
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                if (e.ctrlKey) {
+                    // Ctrl+Enter: Yeniden indexle ve mesajı gönder
+                    vscode.postMessage({
+                        command: 'reindex'
+                    });
+                    setTimeout(() => sendMessage(e.target, e.target === userInput ? 'chat' : 'composer'), 100);
+                } else if (!e.shiftKey) {
+                    // Sadece Enter: Normal mesaj gönderme
+                    e.preventDefault();
+                    sendMessage(e.target, e.target === userInput ? 'chat' : 'composer');
+                }
+            }
+        }
+
+        function sendMessage(input, view) {
+            const text = input.value.trim();
+            if (!text) return;
+
+            vscode.postMessage({
+                command: 'sendMessage',
+                text: text,
+                view: view
+            });
+
+            input.value = '';
+            input.style.height = 'auto';
+        }
+
+        function switchView(view) {
+            if (isViewTransitioning || currentView === view) return;
+            isViewTransitioning = true;
+            
+            currentView = view;
+            
+            document.querySelectorAll('.header-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(view + 'Btn').classList.add('active');
+
+            document.querySelectorAll('.view-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            
+            const targetPanel = document.getElementById(view + 'View');
+            targetPanel.classList.add('active');
+
+            // Oturum seçiciyi güncelle
+            const sessionSelect = document.getElementById('sessionSelect');
+            if (view === 'chat' || view === 'composer') {
+                sessionSelect.style.display = 'block';
+                document.getElementById('newSessionBtn').style.display = 'block';
+                sessionSelect.innerHTML = `<option value="">${view === 'chat' ? 'Geçmiş sohbetler...' : 'Geçmiş kod oturumları...'}</option>`;
+            } else {
+                sessionSelect.style.display = 'none';
+                document.getElementById('newSessionBtn').style.display = 'none';
+            }
+
+            // Mesajları güncelle
+            if (view === 'chat') {
+                updateChatMessages();
+            } else if (view === 'composer') {
+                updateComposerMessages();
+            }
+
+            setTimeout(() => {
+                isViewTransitioning = false;
+            }, 200);
+
+            vscode.postMessage({
+                command: 'viewChanged',
+                view: view
+            });
+        }
+
+        function handleMessage(event) {
+            const message = event.data;
+            console.log('Received message:', message);
+
+            switch (message.type) {
+                case 'updateMessages':
+                    if (message.view === 'chat') {
+                        chatMessages = message.messages;
+                        if (currentView === 'chat') {
+                            updateChatMessages();
+                        }
+                    } else if (message.view === 'composer') {
+                        composerMessages = message.messages;
+                        if (currentView === 'composer') {
+                            updateComposerMessages();
+                        }
+                    }
+                    break;
+                case 'updateSessions':
+                    console.log('Updating sessions:', message.sessions);
+                    updateSessionList(message.sessions);
+                    break;
+                case 'scrollToBottom':
+                    const container = document.getElementById(message.containerId);
+                    if (container) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                    break;
+            }
+        }
+
+        function updateChatMessages() {
+            const messagesWrapper = messageContainer.querySelector('.messages-wrapper');
+            if (!messagesWrapper) return;
+            
+            messagesWrapper.innerHTML = chatMessages.map(msg => renderMessage(msg)).join('');
+            
+            setTimeout(() => {
+                const maxScroll = messageContainer.scrollHeight - messageContainer.clientHeight;
+                const currentScroll = Math.ceil(messageContainer.scrollTop);
+                const isAtBottom = maxScroll - currentScroll <= 50;
+                
+                if (!isAtBottom) {
+                    scrollToBottomBtn.style.display = 'flex';
+                    scrollToBottomBtn.style.visibility = 'visible';
+                }
+                
+                if (shouldAutoScroll) {
+                    messageContainer.scrollTo({
+                        top: messageContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+
+        function updateComposerMessages() {
+            const messagesWrapper = composerPreview.querySelector('.messages-wrapper');
+            if (!messagesWrapper) return;
+            
+            messagesWrapper.innerHTML = composerMessages.map(msg => renderMessage(msg)).join('');
+            
+            setTimeout(() => {
+                const maxScroll = composerPreview.scrollHeight - composerPreview.clientHeight;
+                const currentScroll = Math.ceil(composerPreview.scrollTop);
+                const isAtBottom = maxScroll - currentScroll <= 50;
+                
+                if (!isAtBottom) {
+                    scrollToBottomBtnComposer.style.display = 'flex';
+                    scrollToBottomBtnComposer.style.visibility = 'visible';
+                }
+                
+                if (shouldAutoScroll) {
+                    composerPreview.scrollTo({
+                        top: composerPreview.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
+        }
+
+        function renderMessage(message) {
+            const timestamp = message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : '';
+            const isUser = message.role === 'user';
+            const className = isUser ? 'user-message' : 'assistant-message';
+
+            return `
+                <div class="message ${className}">
+                    <div class="message-header">
+                        <span class="message-role">${isUser ? 'Siz' : 'Assistant'}</span>
+                        <span class="message-time">${timestamp}</span>
+                    </div>
+                    <div class="message-content">
+                        ${marked.parse(message.content)}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateModelList() {
+            const provider = document.getElementById('aiProvider').value;
+            const modelSelect = document.getElementById('modelName');
+            modelSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+            if (provider === 'ollama') {
+                document.getElementById('apiEndpoint').value = 'http://localhost:11434';
+                fetch('http://localhost:11434/api/tags')
+                    .then(response => response.json())
+                    .then(data => {
+                        modelSelect.innerHTML = '';
+                        if (data.models) {
+                            data.models.forEach(model => {
+                                const option = document.createElement('option');
+                                option.value = model.name;
+                                option.textContent = model.name;
+                                modelSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        modelSelect.innerHTML = '<option value="">Ollama bağlantısı başarısız</option>';
+                    });
+            } else {
+                document.getElementById('apiEndpoint').value = 'http://localhost:1234';
+                fetch('http://localhost:1234/v1/models')
+                    .then(response => response.json())
+                    .then(data => {
+                        modelSelect.innerHTML = '';
+                        if (data.data) {
+                            data.data.forEach(model => {
+                                const option = document.createElement('option');
+                                option.value = model.id;
+                                option.textContent = model.id;
+                                modelSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch(() => {
+                        modelSelect.innerHTML = '<option value="">LM Studio bağlantısı başarısız</option>';
+                    });
+            }
+        }
+
+        function updateTemperatureValue() {
+            const value = document.getElementById('temperature').value;
+            document.getElementById('temperatureValue').textContent = value;
+        }
+
+        function saveModelSettings() {
+            const settings = {
+                provider: document.getElementById('aiProvider').value,
+                modelName: document.getElementById('modelName').value,
+                apiEndpoint: document.getElementById('apiEndpoint').value,
+                maxTokens: parseInt(document.getElementById('maxTokens').value),
+                temperature: parseFloat(document.getElementById('temperature').value)
+            };
+
+            vscode.postMessage({
+                command: 'saveModelSettings',
+                settings
+            });
+        }
+
+        function testModelConnection() {
+            vscode.postMessage({
+                command: 'testModelConnection',
+                settings: {
+                    provider: document.getElementById('aiProvider').value,
+                    modelName: document.getElementById('modelName').value,
+                    apiEndpoint: document.getElementById('apiEndpoint').value
+                }
+            });
+        }
+
+        function updateSessionList(sessions) {
+            if (!sessions) {
+                console.error('No sessions data received');
+                return;
+            }
+
+            const sessionSelect = document.getElementById('sessionSelect');
+            const placeholder = currentView === 'chat' ? 'Geçmiş sohbetler...' : 'Geçmiş kod oturumları...';
+            
+            const filteredSessions = currentView === 'chat' 
+                ? (sessions.chatSessions || [])
+                : (sessions.composerSessions || []);
+            
+            console.log('Filtered sessions for view', currentView, ':', filteredSessions);
+            
+            sessionSelect.innerHTML = `<option value="">${placeholder}</option>` +
+                filteredSessions
+                    .sort((a, b) => b.lastUpdated - a.lastUpdated)
+                    .map(session => `<option value="${session.id}">${session.title || 'İsimsiz Oturum'}</option>`)
+                    .join('');
+        }
+
+        [userInput, composerInput].forEach(input => {
+            input.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+
+        updateModelList();
+
+        function applyCode(timestamp) {
+            const message = composerMessages.find(m => m.timestamp === timestamp);
+            if (message) {
+                vscode.postMessage({
+                    command: 'applyCode',
+                    code: message.content
+                });
+            }
+        }
+
+        function copyCode(timestamp) {
+            const message = composerMessages.find(m => m.timestamp === timestamp);
+            if (message) {
+                vscode.postMessage({
+                    command: 'copyCode',
+                    code: message.content
+                });
+            }
+        }
+
+        // Scroll event listeners
+        messageContainer.addEventListener('scroll', handleScroll);
+        composerPreview.addEventListener('scroll', handleScroll);
+
+        function handleScroll(e) {
+            const container = e.target;
+            const isChat = container.id === 'messageContainer';
+            const button = isChat ? scrollToBottomBtn : scrollToBottomBtnComposer;
+            
+            const scrollOffset = 50;
+            const scrollPosition = Math.ceil(container.scrollTop);
+            const maxScroll = container.scrollHeight - container.clientHeight;
+            const isAtBottom = maxScroll - scrollPosition <= scrollOffset;
+            
+            console.log('Scroll state:', {
+                containerId: container.id,
+                isAtBottom,
+                scrollPosition,
+                maxScroll,
+                scrollTop: container.scrollTop,
+                scrollHeight: container.scrollHeight,
+                clientHeight: container.clientHeight,
+                difference: maxScroll - scrollPosition
+            });
+            
+            if (!isAtBottom) {
+                isUserScrolling = true;
+                shouldAutoScroll = false;
+                button.style.display = 'flex';
+                button.style.visibility = 'visible';
+            } else {
+                shouldAutoScroll = true;
+                button.style.display = 'none';
+                button.style.visibility = 'hidden';
+            }
+        }
+
+        function scrollToBottom(containerId) {
+            const container = document.getElementById(containerId);
+            const button = containerId === 'messageContainer' ? scrollToBottomBtn : scrollToBottomBtnComposer;
+            
+            if (!container) return;
+            
+            container.scrollTo({
+                top: container.scrollHeight,
+                behavior: 'smooth'
+            });
+            
+            shouldAutoScroll = true;
+            isUserScrolling = false;
+            button.style.display = 'none';
+            button.style.visibility = 'hidden';
+        }
+
+        // Scroll butonlarına tıklama
+        scrollToBottomBtn.addEventListener('click', () => {
+            console.log('Scroll button clicked for chat');
+            scrollToBottom('messageContainer');
+        });
+
+        scrollToBottomBtnComposer.addEventListener('click', () => {
+            console.log('Scroll button clicked for composer');
+            scrollToBottom('composerPreview');
+        });
+    </script>
+</body>
+</html> 

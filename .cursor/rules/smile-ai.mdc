@@ -1,0 +1,268 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+---
+description: Smile Ai Coding Assistant Extension For Vscode
+globs: 
+---
+---
+description: Smile Ai Coding Assistant Extension For Vscode 
+globs: 
+---
+# Smile AI - VSCode Eklentisi Geliştirme Kuralları
+
+Bu doküman, Smile AI VSCode eklentisinin geliştirme sürecinde uyulması gereken kuralları ve standartları içerir.
+
+## 🌟 Proje Bilgileri
+
+- **İsim**: Smile AI - VSCode AI Asistan
+- **Açıklama**: VSCode için akıllı AI asistan eklentisi
+- **Dil**: TypeScript
+- **Tür**: VSCode Eklentisi
+- Kod içerisinde statik textler dahil her şeyde İngilizce kullanılacak!!
+
+## 💻 Geliştirme Standartları
+
+### TypeScript Yapılandırması
+- Versiyon: ^5.0.0
+- Strict Mode: Aktif
+- Module Resolution: Node
+- Target: ES2022
+- js değil ts dosyası tercih et
+
+### Kod Formatı
+- Girinti: 4 boşluk
+- Maksimum Satır Uzunluğu: 120 karakter
+- Tırnak İşareti Stili: Tek tırnak (')
+- Noktalı Virgül: Zorunlu
+
+### İsimlendirme Kuralları
+- Sınıflar: PascalCase (örn. ChatService)
+- Arayüzler: PascalCase (örn. IMessageHandler)
+- Tipler: PascalCase (örn. MessageType)
+- Fonksiyonlar: camelCase (örn. sendMessage)
+- Değişkenler: camelCase (örn. userInput)
+- Sabitler: UPPER_SNAKE_CASE (örn. MAX_TOKEN_LENGTH)
+- Private üyeler: _camelCase (örn. _privateMethod)
+
+## 📁 Proje Yapısı
+
+### Dizin Yapısı
+- `src/services`: Servis sınıfları ve iş mantığı
+- `src/webview`: Webview sağlayıcıları ve UI bileşenleri
+- `src/models`: Veri modelleri, arayüzler ve tipler
+- `src/utils`: Yardımcı fonksiyonlar ve araçlar
+
+### Dosya İsimlendirme
+- Servisler: `{name}Service.ts`
+- Webview'lar: `{name}ViewProvider.ts`
+- Modeller: `{name}.ts`
+- Yardımcı Sınıflar: `{name}Utils.ts`
+
+## 🤖 AI Özellikleri
+
+### Desteklenen Sağlayıcılar
+1. **Ollama**
+   - Tür: Yerel
+   - Varsayılan Endpoint: http://localhost:11434
+   - Önerilen Modeller: codellama, deepseek-coder
+
+2. **OpenAI**
+   - Tür: Bulut
+   - API Anahtarı Gerekli
+   - Önerilen Modeller: gpt-4-turbo, gpt-3.5-turbo
+
+3. **Anthropic**
+   - Tür: Bulut
+   - API Anahtarı Gerekli
+   - Önerilen Modeller: claude-3-opus, claude-3-sonnet
+
+4. **LM Studio**
+   - Tür: Yerel
+   - Varsayılan Endpoint: http://localhost:1234
+   - Önerilen Modeller: codellama, wizardcoder
+
+5. **LocalAI**
+   - Tür: Yerel
+   - Varsayılan Endpoint: http://localhost:8080
+   - Önerilen Modeller: gguf formatında kod modelleri
+
+6. **Deepseek**
+   - Tür: Yerel
+   - Varsayılan Endpoint: http://localhost:8081
+   - Önerilen Modeller: deepseek-coder
+
+7. **Qwen**
+   - Tür: Yerel
+   - Varsayılan Endpoint: http://localhost:8082
+   - Önerilen Modeller: qwen-72b, qwen-14b
+
+### Özellikler
+
+#### Chat
+- Maksimum Token: 2048
+- Varsayılan Sıcaklık: 0.7
+- Streaming: Aktif
+- Mesaj Geçmişi: Sınırlı (son 10 mesaj)
+- Kod Vurgulama: Aktif
+- Markdown Desteği: Tam
+
+#### Kod Tamamlama
+- Tetikleyici Karakterler: . ( [ { < boşluk
+- Maksimum Token: 1024
+- Sıcaklık: 0.2
+- Bağlam Penceresi: 1000 token
+- Otomatik Import: Aktif
+
+#### Composer
+- Agent Tabanlı Geliştirme Asistanı
+- İşlem Sıralaması:
+  1. Görev Analizi
+  2. Alt Görevlere Bölme
+  3. Sıralı/Paralel Yürütme
+  4. Doğrulama ve Geri Bildirim
+- Özellikler:
+  - Kod Düzenleme
+  - Terminal Komutları
+  - Dosya İşlemleri
+  - Otomatik Uygulama
+  - Geri Alma/Yeniden Uygulama
+- Lokal Model Optimizasyonları:
+  - Küçük İş Parçaları
+  - Paralel İşlem Desteği
+  - Bellek Yönetimi
+  - Hata Toleransı
+
+#### Bağlam Farkındalığı
+- Açık Dosyaları Dahil Et
+- Seçimi Dahil Et
+- Pano İçeriğini Dahil Et
+- Git Değişikliklerini İzle
+- Workspace Sembollerini Tara
+
+## 🎨 Kullanıcı Arayüzü
+
+### Tema
+- VSCode temasını kullan
+- Özel değişkenler için VSCode tema değişkenlerini kullan
+- Tutarlı simge seti (Codicons)
+
+### Bileşenler
+
+#### Chat
+- Dikey düzen
+- Kullanıcı mesajları sağda
+- Asistan mesajları solda
+- Özellikler:
+  - Model seçici
+  - Mesaj geçmişi
+  - Kod vurgulama
+  - Markdown desteği
+  - Emoji desteği
+  - Dosya ekleri
+  - Kod snippetleri
+
+#### Composer
+- Chat ile benzer arayüz
+- İşlem Akışı Görünümü
+- Dosya Gezgini Entegrasyonu
+- Terminal Entegrasyonu
+- Değişiklik Önizlemesi
+- Geri Alma Geçmişi
+- İlerleme Göstergeleri
+
+#### Ayarlar
+- Bölümler:
+  - Genel
+  - Sağlayıcılar
+  - Modeller
+  - Görünüm
+- Özellikler:
+  - Model yönetimi
+  - API anahtarı yönetimi
+  - Endpoint yapılandırması
+  - Tema özelleştirme
+  - Kısayol düzenleme
+
+### Kısayollar
+- Chat'i Aç: `Ctrl+Shift+A`
+- Ayarları Aç: `Ctrl+Shift+,`
+- Chat'i Temizle: `Ctrl+Shift+L`
+- Giriş Alanına Odaklan: `Ctrl+Shift+I`
+- Composer'ı Aç: `Ctrl+Shift+C`
+
+## 📝 Dokümantasyon
+
+### Kod Yorumları
+- JSDoc stili zorunlu
+- Tüm public API'ler için dokümantasyon gerekli
+- Karmaşık algoritmalar için açıklama
+- Tip tanımlamaları için detaylı açıklama
+
+### README Bölümleri
+1. Giriş
+2. Özellikler
+3. Kurulum
+4. Kullanım
+5. Yapılandırma
+6. Geliştirme
+7. Katkıda Bulunma
+8. Lisans
+
+## 🧪 Test
+
+### Test Çerçevesi
+- Jest kullanılacak
+- Test Tipleri:
+  - Birim Testler
+  - Entegrasyon Testleri
+  - E2E Testler
+  - UI Testleri
+
+### Kapsama Hedefleri
+- İfadeler: %80
+- Dallar: %70
+- Fonksiyonlar: %80
+- Satırlar: %80
+
+### Test Prensipleri
+- Her public API için test yazılmalı
+- Mock ve stub kullanımı
+- Asenkron işlemler için özel testler
+- UI bileşenleri için snapshot testleri
+
+## 📦 Dağıtım
+
+### Gereksinimler
+- VSCode: ^1.80.0
+- Node.js: >=18.0.0
+- TypeScript: ^5.0.0
+
+### Paketleme
+- Dahil Edilecekler:
+  - dist/**/*
+  - package.json
+  - README.md
+  - CHANGELOG.md
+  - LICENSE
+
+- Hariç Tutulacaklar:
+  - src/**/*
+  - test/**/*
+  - node_modules/**/*
+  - .vscode/**/*
+  - .git/**/*
+
+### Sürüm Yönetimi
+- Semantic Versioning (MAJOR.MINOR.PATCH)
+- CHANGELOG güncellemesi
+- Git tag'leri
+- Release notları
+
+### Kalite Kontrol
+- Lint kontrolleri
+- Test başarısı
+- Paket boyutu optimizasyonu
+- Güvenlik taraması 

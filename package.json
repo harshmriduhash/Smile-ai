@@ -1,0 +1,448 @@
+{
+  "name": "smile-ai",
+  "displayName": "Smile AI",
+  "description": "Local AI powered coding assistant with agent capabilities",
+  "version": "0.0.1",
+  "publisher": "bgunduz55",
+  "icon": "resources/smile-ai-logo.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bgunduz55/smile-ai"
+  },
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "smile-ai",
+          "title": "Smile AI",
+          "icon": "resources/smile-ai-logo.png"
+        }
+      ]
+    },
+    "views": {
+      "smile-ai": [
+        {
+          "type": "webview",
+          "id": "smile-ai.assistant",
+          "name": "AI Assistant",
+          "icon": "resources/smile-ai-logo.png"
+        },
+        {
+          "type": "tree",
+          "id": "smile-ai.futureImprovements",
+          "name": "Future Improvements",
+          "icon": "resources/lightbulb.svg"
+        },
+        {
+          "type": "tree",
+          "id": "smile-ai-codebase",
+          "name": "Codebase",
+          "icon": "resources/folder.svg"
+        },
+        {
+          "type": "tree",
+          "id": "smile-ai-improvements",
+          "name": "Improvements",
+          "icon": "resources/improvements.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "smile-ai.openChat",
+        "title": "Open Chat",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.openComposer",
+        "title": "Open Composer",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.openSettings",
+        "title": "Settings",
+        "category": "Smile AI",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "smile-ai.analyzeCode",
+        "title": "Smile AI: Analyze Code"
+      },
+      {
+        "command": "smile-ai.generateTests",
+        "title": "Smile AI: Generate Tests"
+      },
+      {
+        "command": "smile-ai.refactorCode",
+        "title": "Smile AI: Refactor Code"
+      },
+      {
+        "command": "smile-ai.explainCode",
+        "title": "Smile AI: Explain Code"
+      },
+      {
+        "command": "smile-ai.reindexCodebase",
+        "title": "Smile AI: Reindex Codebase"
+      },
+      {
+        "command": "smile-ai.addModel",
+        "title": "Add AI Model",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.removeModel",
+        "title": "Remove AI Model",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.selectActiveModel",
+        "title": "Select Active Model",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.noteImprovement",
+        "title": "Smile AI: Note Future Improvement",
+        "category": "Smile AI"
+      },
+      {
+        "command": "smile-ai.markImprovementDone",
+        "title": "Mark as Done",
+        "icon": "$(check)"
+      },
+      {
+        "command": "smile-ai.dismissImprovement",
+        "title": "Dismiss",
+        "icon": "$(x)"
+      },
+      {
+        "command": "smile-ai.semanticCodeSearch",
+        "title": "Smile AI: Search Code Semantically...",
+        "category": "Smile AI",
+        "icon": "$(search)"
+      },
+      {
+        "command": "smile-ai.setImprovementPriority",
+        "title": "Smile AI: Set Improvement Priority",
+        "category": "Smile AI",
+        "icon": "$(list-ordered)"
+      },
+      {
+        "command": "smile-ai.modifyMultipleFiles",
+        "title": "Smile AI: Modify Multiple Files",
+        "category": "Smile AI",
+        "icon": "$(files)"
+      },
+      {
+        "command": "smile-ai.switchMode",
+        "title": "Switch Mode",
+        "category": "Smile AI",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "smile-ai.interact",
+        "title": "Ask/Edit/Agent",
+        "category": "Smile AI",
+        "icon": "$(comment)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "smile-ai.openSettings",
+          "when": "view == smile-ai.assistant",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "smile-ai.setImprovementPriority",
+          "when": "view == smile-ai.futureImprovements && viewItem == improvementNotePending",
+          "group": "1_modification"
+        },
+        {
+          "command": "smile-ai.markImprovementDone",
+          "when": "view == smile-ai.futureImprovements && viewItem == improvementNotePending",
+          "group": "2_status"
+        },
+        {
+          "command": "smile-ai.dismissImprovement",
+          "when": "view == smile-ai.futureImprovements && viewItem == improvementNotePending",
+          "group": "2_status"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "smile-ai.noteImprovement",
+        "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "smile-ai.setImprovementPriority",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
+        "when": "focusedView == smile-ai.futureImprovements"
+      },
+      {
+        "command": "smile-ai.modifyMultipleFiles",
+        "key": "ctrl+alt+m",
+        "mac": "cmd+alt+m",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "smile-ai.interact",
+        "key": "ctrl+shift+i",
+        "mac": "cmd+shift+i",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "smile-ai.switchMode",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m"
+      }
+    ],
+    "configuration": {
+      "title": "Smile AI",
+      "properties": {
+        "smile-ai.aiProvider": {
+          "type": "string",
+          "default": "ollama",
+          "enum": [
+            "ollama",
+            "lmstudio"
+          ],
+          "description": "Select the local AI provider"
+        },
+        "smile-ai.enableRAG": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Retrieval Augmented Generation (RAG) for providing contextual code to the AI model"
+        },
+        "smile-ai.rag.maxChunks": {
+          "type": "number",
+          "default": 5,
+          "description": "Maximum number of code chunks to include in RAG context"
+        },
+        "smile-ai.rag.maxChunkSize": {
+          "type": "number",
+          "default": 2000,
+          "description": "Maximum size of each code chunk in characters"
+        },
+        "smile-ai.rag.minSimilarity": {
+          "type": "number",
+          "default": 0.7,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum similarity score (0-1) for including a code chunk in RAG context"
+        },
+        "smile-ai.models": {
+          "type": "array",
+          "default": [
+            {
+              "name": "gemma3-12b",
+              "provider": "ollama",
+              "modelName": "gemma3:12b",
+              "apiEndpoint": "http://localhost:11434",
+              "maxTokens": 2048,
+              "temperature": 0.7,
+              "embeddingModelName": "nomic-embed-text",
+              "enableRAG": true
+            }
+          ],
+          "description": "Configured AI models",
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "provider",
+              "modelName",
+              "apiEndpoint"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Display name for the model"
+              },
+              "provider": {
+                "type": "string",
+                "enum": [
+                  "ollama",
+                  "lmstudio"
+                ],
+                "description": "AI provider type"
+              },
+              "modelName": {
+                "type": "string",
+                "description": "Name of the model to use"
+              },
+              "apiEndpoint": {
+                "type": "string",
+                "description": "API endpoint URL"
+              },
+              "maxTokens": {
+                "type": "number",
+                "default": 2048,
+                "description": "Maximum tokens for responses"
+              },
+              "temperature": {
+                "type": "number",
+                "default": 0.7,
+                "description": "Temperature for responses"
+              },
+              "embeddingModelName": {
+                "type": "string",
+                "description": "(Optional) Name of the embedding model to use with this provider (e.g., 'nomic-embed-text' for Ollama). If empty, the main modelName might be tried."
+              },
+              "enableRAG": {
+                "type": "boolean",
+                "default": true,
+                "description": "Enable RAG for this model"
+              }
+            }
+          }
+        },
+        "smile-ai.activeModel": {
+          "type": "string",
+          "description": "Currently active AI model name"
+        },
+        "smile-ai.appearance": {
+          "type": "object",
+          "description": "Appearance settings",
+          "properties": {
+            "theme": {
+              "type": "string",
+              "enum": [
+                "system",
+                "light",
+                "dark"
+              ],
+              "default": "system",
+              "description": "Color theme for the AI Assistant"
+            },
+            "fontSize": {
+              "type": "number",
+              "default": 14,
+              "description": "Font size for the AI Assistant"
+            },
+            "fontFamily": {
+              "type": "string",
+              "default": "system-ui",
+              "description": "Font family for the AI Assistant"
+            }
+          }
+        },
+        "smile-ai.behavior": {
+          "type": "object",
+          "description": "Behavior settings",
+          "properties": {
+            "autoComplete": {
+              "type": "boolean",
+              "default": true,
+              "description": "Enable auto-completion suggestions"
+            },
+            "inlineCompletion": {
+              "type": "boolean",
+              "default": true,
+              "description": "Show inline completion suggestions"
+            },
+            "autoImport": {
+              "type": "boolean",
+              "default": true,
+              "description": "Automatically add imports for suggestions"
+            }
+          }
+        },
+        "smile-ai.shortcuts": {
+          "type": "object",
+          "description": "Keyboard shortcut settings",
+          "properties": {
+            "toggleAssistant": {
+              "type": "string",
+              "default": "ctrl+shift+space",
+              "description": "Toggle AI Assistant panel"
+            },
+            "acceptSuggestion": {
+              "type": "string",
+              "default": "tab",
+              "description": "Accept current suggestion"
+            },
+            "nextSuggestion": {
+              "type": "string",
+              "default": "alt+]",
+              "description": "Move to next suggestion"
+            },
+            "previousSuggestion": {
+              "type": "string",
+              "default": "alt+[",
+              "description": "Move to previous suggestion"
+            }
+          }
+        },
+        "smile-ai.indexing.generateEmbeddings": {
+          "type": "boolean",
+          "scope": "resource",
+          "default": false,
+          "description": "Enable generation and storage of embeddings for code symbols during indexing. Requires a compatible embedding model (e.g., Ollama with 'nomic-embed-text') and significantly increases indexing time."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./ && webpack --mode production",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/diff": "^7.0.1",
+    "@types/glob": "^8.1.0",
+    "@types/jest": "^29.5.12",
+    "@types/marked": "^5.0.2",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.99.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.1",
+    "@typescript-eslint/parser": "^6.13.1",
+    "@vscode/test-electron": "^2.3.8",
+    "concurrently": "^9.1.2",
+    "css-loader": "^7.1.2",
+    "eslint": "^8.54.0",
+    "glob": "^10.3.10",
+    "jest": "^29.7.0",
+    "jest-environment-node": "^29.7.0",
+    "mocha": "^10.2.0",
+    "style-loader": "^4.0.0",
+    "ts-jest": "^29.1.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.8.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.6.2",
+    "diff": "^5.1.0",
+    "ignore": "^5.3.1",
+    "marked": "^11.2.0",
+    "smile-ai": "file:",
+    "uuid": "^11.0.5",
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.11"
+  }
+}

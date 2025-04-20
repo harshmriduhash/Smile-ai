@@ -1,0 +1,1 @@
+const path = require('path'); module.exports = { entry: './media/main.ts', output: { path: path.resolve(__dirname, 'media'), filename: 'main.js' }, module: { rules: [{ test: /\.ts$/, exclude: /node_modules/, use: [{ loader: 'ts-loader' }] }] }, resolve: { extensions: ['.ts', '.js'] } };
