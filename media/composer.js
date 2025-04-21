@@ -74,7 +74,7 @@ function updatePreview(code, diff) {
   if (!code && !diff) {
     previewContent.innerHTML = `
             <div class="empty-state">
-                <h3>No Preview Available</h3>
+                <h3> No Preview Available </h3>
                 <p>Generate code or make changes to see preview</p>
             </div>
         `;
