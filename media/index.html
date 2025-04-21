@@ -1,43 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smile AI Assistant</title>
-    <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.17/dist/codicon.css">
-</head>
-<body>
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.17/dist/codicon.css"
+    />
+  </head>
+  <body>
     <div id="app">
-        <div id="chat-container"></div>
-        
-        <div id="input-container">
-            <div id="attachments-container"></div>
-            
-            <div class="input-row">
-                <button id="add-context-button" title="Add context">
-                    <i class="codicon codicon-add"></i>
-                </button>
-                
-                <div id="context-menu" class="context-menu">
-                    <div id="attach-file" class="context-menu-item">
-                        <i class="codicon codicon-file"></i> Attach File
-                    </div>
-                    <div id="attach-folder" class="context-menu-item">
-                        <i class="codicon codicon-folder"></i> Attach Folder
-                    </div>
-                </div>
-                
-                <textarea id="message-input" placeholder="Type your message..."></textarea>
-                
-                <button id="send-message" title="Send message">
-                    <i class="codicon codicon-send"></i>
-                </button>
+      <div id="chat-container"></div>
+
+      <div id="input-container">
+        <div id="attachments-container"></div>
+
+        <div class="input-row">
+          <button id="add-context-button" title="Add context">
+            <i class="codicon codicon-add"></i>
+          </button>
+
+          <div id="context-menu" class="context-menu">
+            <div id="attach-file" class="context-menu-item">
+              <i class="codicon codicon-file"></i> Attach File
             </div>
+            <div id="attach-folder" class="context-menu-item">
+              <i class="codicon codicon-folder"></i> Attach Folder
+            </div>
+          </div>
+
+          <textarea
+            id="message-input"
+            placeholder="Type your message..."
+          ></textarea>
+
+          <button id="send-message" title="Send message">
+            <i class="codicon codicon-send"></i>
+          </button>
         </div>
+      </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="main.js"></script>
-</body>
-</html> 
+  </body>
+</html>
