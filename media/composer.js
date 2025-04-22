@@ -160,9 +160,9 @@ function showError(error) {
 }
 
 function applyCode() {
-    vscode.postMessage({
-        command: "applyCode",
-    });
+  vscode.postMessage({
+    command: "applyCode",
+  });
 }
 
 function applyChanges() {
