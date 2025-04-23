@@ -1,9 +1,9 @@
-import { AIEngine } from '../../ai-engine/AIEngine';
+import { AIEngine } from "../../ai-engine/AIEngine";
 
 export abstract class BaseExecutor {
-    protected aiEngine: AIEngine;
+  protected aiEngine: AIEngine;
 
-    constructor(aiEngine: AIEngine) {
-        this.aiEngine = aiEngine;
-    }
-} 
+  constructor(aiEngine: AIEngine) {
+    this.aiEngine = aiEngine;
+  }
+}
