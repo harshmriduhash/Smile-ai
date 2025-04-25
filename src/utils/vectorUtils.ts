@@ -13,6 +13,7 @@ function dotProduct(vecA: number[], vecB: number[]): number {
     return product;
 }
 
+
 /**
  * Calculates the magnitude (Euclidean norm) of a vector.
  */
