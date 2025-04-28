@@ -702,7 +702,6 @@ export class AIAssistantPanel {
     try {
       const fileOperationManager = FileOperationManager.getInstance();
       const success = await fileOperationManager.rejectOperation(id);
-
       if (success) {
         vscode.window.showInformationMessage("File operation rejected.");
       } else {
