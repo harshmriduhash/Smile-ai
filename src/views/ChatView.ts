@@ -1,43 +1,45 @@
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 export class ChatView implements vscode.WebviewViewProvider {
-    private static instance: ChatView;
-    private _view?: vscode.WebviewView;
-    private readonly _extensionUri: vscode.Uri;
+  private static instance: ChatView;
+  private _view?: vscode.WebviewView;
+  private readonly _extensionUri: vscode.Uri;
 
-    private constructor(extensionUri: vscode.Uri) {
-        this._extensionUri = extensionUri;
+  private constructor(extensionUri: vscode.Uri) {
+    this._extensionUri = extensionUri;
+  }
+
+  public static getInstance(extensionUri?: vscode.Uri): ChatView {
+    if (!ChatView.instance && extensionUri) {
+      ChatView.instance = new ChatView(extensionUri);
     }
+    return ChatView.instance;
+  }
 
-    public static getInstance(extensionUri?: vscode.Uri): ChatView {
-        if (!ChatView.instance && extensionUri) {
-            ChatView.instance = new ChatView(extensionUri);
-        }
-        return ChatView.instance;
-    }
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    _context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ): void | Thenable<void> {
+    this._view = webviewView;
 
-    public resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        _context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken,
-    ): void | Thenable<void> {
-        this._view = webviewView;
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this._extensionUri],
+    };
 
-        webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [
-                this._extensionUri
-            ]
-        };
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+  }
 
-        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-    }
+  private _getHtmlForWebview(webview: vscode.Webview): string {
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "main.js")
+    );
+    const styleUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "style.css")
+    );
 
-    private _getHtmlForWebview(webview: vscode.Webview): string {
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
-        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'style.css'));
-
-        return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
             <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -56,11 +58,11 @@ export class ChatView implements vscode.WebviewViewProvider {
                 <script src="${scriptUri}"></script>
             </body>
             </html>`;
-    }
+  }
 
-    public show() {
-        if (this._view) {
-            this._view.show(true);
-        }
+  public show() {
+    if (this._view) {
+      this._view.show(true);
     }
-} 
+  }
+}
